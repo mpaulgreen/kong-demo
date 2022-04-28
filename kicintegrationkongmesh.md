@@ -1,3 +1,6 @@
+- Deploy the mesh first
+
+- In Progress deployment steps of kic
 ```
 helm repo add kong https://charts.konghq.com
 helm repo update
@@ -24,7 +27,7 @@ oc apply -f kic/sample.yaml
 ```
 
 ```
-cat <<EOF | kubectl apply -f -
+cat <<EOF | kubectl delete -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -51,6 +54,17 @@ EOF
 oc get ingress -n kuma-demo
 oc describe ingress route1 -n kuma-demo
 http kong-kong-proxy-kong.apps.mpkongdemo.51ty.p1.openshiftapps.com/route1/hello
+```
+
+- Uninstall 
+```
+oc delete ingress route1
+oc delete -f kic/sample.yaml 
+oc policy remove-role-from-group system:image-puller system:serviceaccounts:kuma-demo --namespace=kong-image-registry
+oc adm policy remove-scc-from-group anyuid system:serviceaccounts:kuma-demo
+helm uninstall kong -n kong
+oc delete project kong
+kubectl delete -f https://bit.ly/kong-ingress-enterprise
 ```
 
 

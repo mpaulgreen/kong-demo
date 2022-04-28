@@ -24,10 +24,11 @@ oc expose service kong-kong-proxy -n kong
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:kuma-demo
 oc policy add-role-to-group system:image-puller system:serviceaccounts:kuma-demo --namespace=kong-image-registry
 oc apply -f kic/sample.yaml
+oc apply -f ~/kong-demo/kubernetes/kuma-demo-aio.yaml
 ```
 
 ```
-cat <<EOF | kubectl delete -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -51,14 +52,40 @@ EOF
 ```
 
 ```
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-app-ingress
+  namespace: kuma-demo
+  annotations:
+    konghq.com/strip-path: "true"
+    kubernetes.io/ingress.class: kong
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /demo-app
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 8080 
+EOF
+```
+
+```
 oc get ingress -n kuma-demo
 oc describe ingress route1 -n kuma-demo
 http kong-kong-proxy-kong.apps.mpkongdemo.51ty.p1.openshiftapps.com/route1/hello
+http kong-kong-proxy-kong.apps.mpkongdemo.51ty.p1.openshiftapps.com/demo-app
 ```
 
 - Uninstall 
 ```
 oc delete ingress route1
+oc delete ingress demo-app-ingress
 oc delete -f kic/sample.yaml 
 oc policy remove-role-from-group system:image-puller system:serviceaccounts:kuma-demo --namespace=kong-image-registry
 oc adm policy remove-scc-from-group anyuid system:serviceaccounts:kuma-demo

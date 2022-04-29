@@ -24,7 +24,7 @@ oc expose service kong-kong-proxy -n kong
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:kuma-demo
 oc policy add-role-to-group system:image-puller system:serviceaccounts:kuma-demo --namespace=kong-image-registry
 oc apply -f kic/sample.yaml
-oc apply -f ~/kong-demo/kubernetes/kuma-demo-aio.yaml
+oc apply -f ~/kuma-demo/kubernetes/kuma-demo-aio.yaml
 ```
 
 ```

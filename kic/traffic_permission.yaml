@@ -1,0 +1,12 @@
+apiVersion: kuma.io/v1alpha1
+kind: TrafficPermission
+mesh: default
+metadata:
+  name: ingress-to-mesh
+spec:
+  destinations:
+  - match:
+      kuma.io/service: '*'
+  sources:
+  - match:
+      kuma.io/service: kong-kong-proxy_kong_svc_8000

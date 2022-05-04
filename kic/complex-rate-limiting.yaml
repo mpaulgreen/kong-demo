@@ -1,0 +1,28 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: user1-auth
+  namespace: kuma-demo
+plugin: key-auth
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongConsumer
+metadata:
+  name: user1
+  namespace: kuma-demo
+  annotations:
+    kubernetes.io/ingress.class: kong
+username: user1
+credentials:
+  - user1-apikey
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: rate-paid-tier
+  namespace: kuma-demo
+config: 
+  minute: 100
+  policy: local
+  limit_by: consumer
+plugin: rate-limiting

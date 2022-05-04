@@ -1,0 +1,10 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: rate-free-tier
+  namespace: kuma-demo
+config: 
+  minute: 10
+  policy: local
+  limit_by: ip
+plugin: rate-limiting

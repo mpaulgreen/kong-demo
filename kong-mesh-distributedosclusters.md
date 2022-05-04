@@ -260,7 +260,7 @@ EOF
 kubectl delete trafficpermission allow-all-default
 ```
 
-- Apply the new trafficpermission
+- Apply the new trafficpermission(This will make all traffic to v2 of beningo fail)
 ```
 cat <<EOF | kubectl apply -f -
 apiVersion: kuma.io/v1alpha1
@@ -297,5 +297,4 @@ spec:
     - match:
         kuma.io/service: benigno_kuma-app_svc_5000
 EOF
-
 ```
